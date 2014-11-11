@@ -59,6 +59,25 @@ public class MyListAdapter extends BaseAdapter {
         refresh();
     }
 
+    public void deleteMan(int i) {
+        VoteMan man = (VoteMan) getItem(i);
+        database.delete(MyDbHelper.TABLE_MAN, MyDbHelper.COLUMN_MAN_ID + " = ?", new String[] {String.valueOf(man.getId())} );
+        refresh();
+    }
+
+    public void clearResult() {
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            ContentValues cv = new ContentValues();
+            cv.put(MyDbHelper.COLUMN_MAN_NAME, cursor.getString(1));
+            cv.put(MyDbHelper.COLUMN_MAN_VOTES, 0);
+            database.update(MyDbHelper.TABLE_MAN, cv, MyDbHelper.COLUMN_MAN_ID + " = ?",
+                    new String[] {String.valueOf(cursor.getLong(0))});
+            cursor.moveToNext();
+        }
+        refresh();
+    }
+
     public void addVoteToMan(int i) {
         VoteMan man = (VoteMan) getItem(i);
         ContentValues cv = new ContentValues();
@@ -109,7 +128,7 @@ public class MyListAdapter extends BaseAdapter {
         VoteMan man = (VoteMan) getItem(i);
         TextView text = (TextView) view.findViewById(R.id.nameMan);
         int countVotes = getCountVotes();
-        text.setText(man.getName() + " ( " + countVotes + ")("  + (man.getVotes()/(double)(countVotes == 0 ? 1 : countVotes))*100.0 + "%) ");
+        text.setText(man.getName() + " ( " + man.getVotes() + ")("  + (man.getVotes()/(double)(countVotes == 0 ? 1 : countVotes))*100.0 + "%) ");
         return view;
     }
 }

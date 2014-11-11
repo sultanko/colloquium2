@@ -42,6 +42,17 @@ public class MainActivity extends Activity {
                 myListAdapter1.addVoteToMan(i);
             }
         });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                MyListAdapter myListAdapter1 = (MyListAdapter) adapterView.getAdapter();
+                myListAdapter1.deleteMan(i);
+
+                return true;
+            }
+        });
     }
 
     public void addMan(View view) {
@@ -57,6 +68,10 @@ public class MainActivity extends Activity {
             buttonAdd.setEnabled(true);
             myListAdapter.clearDatabase();
         }
+    }
+
+    public void clearResult(View view) {
+        myListAdapter.clearResult();
     }
 
 
