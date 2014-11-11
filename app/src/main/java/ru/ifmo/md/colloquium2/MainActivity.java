@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
     private MyListAdapter myListAdapter;
     private Button buttonStart;
     private Button buttonAdd;
+    private boolean voting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (buttonAdd.isEnabled()) {
+                if (!voting) {
                     return;
                 }
                 MyListAdapter myListAdapter1 = (MyListAdapter) adapterView.getAdapter();
@@ -55,6 +56,25 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("Voting", voting);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        voting = savedInstanceState.getBoolean("Voting");
+        if (voting) {
+            buttonAdd.setEnabled(false);
+            buttonStart.setText(R.string.end_vote);
+        } else {
+            buttonStart.setText(R.string.start_vote);
+            buttonAdd.setEnabled(true);
+        }
+    }
+
     public void addMan(View view) {
         myListAdapter.addMan(editText.getText().toString());
     }
@@ -63,10 +83,12 @@ public class MainActivity extends Activity {
         if (buttonStart.getText().toString() == getApplicationContext().getString(R.string.start_vote)) {
             buttonAdd.setEnabled(false);
             buttonStart.setText(R.string.end_vote);
+            voting = true;
         } else {
             buttonStart.setText(R.string.start_vote);
             buttonAdd.setEnabled(true);
             myListAdapter.clearDatabase();
+            voting = false;
         }
     }
 
